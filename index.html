@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Sertifikat Input</title>
+	<link href="https://fonts.googleapis.com/css?family=Grenze|Marck+Script|Oswald&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+	<script src="app.js"></script>
+	<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="app">
+	<div class="container">
+
+		<div class="inputContainer no-print">
+			<input type="text" v-model="namaPeserta" placeholder="Masukkan Nama Peserta">
+			<!-- <input type="submit" value="Download PDF" @click="download('pdf')"> -->
+			<input type="submit" value="Export PNG" @click="download('jpg')">
+			<!-- <br><br>
+			<input type="text" v-model="namaPenyelenggara" placeholder="NamaPenyelenggara">
+			<input type="text" v-model="jabatanPenyelenggara" placeholder="Jabatan Penyelenggara">
+			<input type="text" v-model="nomorIdentitasPenyelenggara" placeholder="Nip/Nim Penyelenggara">
+			<input type="submit" value="Tambah Penyelenggara" @click="addPenyelenggara(namaPenyelenggara, jabatanPenyelenggara, nomorIdentitasPenyelenggara)"> -->
+		</div>
+
+		<div class="sertifikat" id="capture">
+			<div class="logoContainer">
+				<img src="./img/TEL_U.png" alt="">
+				<img src="./img/BEM_KEMA.png" alt="">
+				<img style="width: auto; height: 50px; margin-left: 18px; margin-top: 10px;" src="./img/CTLE.png" alt="">
+			</div>
+			<div class="titleSertifikat" style="margin: 0">
+				<span class="title">Sertifikat</span>
+				<span class="subtitle">Diberikan Kepada:</span>
+			</div>
+
+			<div class="contentSertifikat">
+				<span class="titleName">{{namaPeserta}}</span><br>
+				<span class="subtitle">Atas partisipasinya sebagai:</span>
+				<span class="titleName" style="font-size: 40pt;">Peserta</span><br>
+				<!-- <div class="hr"></div> -->
+				<span class="subtitle">Dalam acara Seminar Nasional Dengan Tema<br>Research Corner "Jurus Jitu Belajar Efektif di Perguruan Tinggi"<br>Bandung 20 September 2019</span>
+			</div>
+
+			<span style="margin-top: 50px;" class="subtitle">Mengetahui: </span>
+			<br>
+
+			<div class="ttdSertifikat">
+				<div class="ttdContent" v-for="(penyelenggara, index) in mengetahui">
+					<b>
+						<span class="subtitle" v-html="penyelenggara.jabatan"></span>
+						<div class="space"></div>
+						<span class="subtitleName">{{penyelenggara.nama}}<hr>{{penyelenggara.nomorIdentitas}}</span>
+					</b>
+				</div>
+			</div>
+		
+		</div>
+
+		<div>
+			<h1>{{status}}</h1>
+		</div>
+
+		<div id="elementH"></div>
+
+	</div>
+</div>
+<script>
+	new Vue({
+	el: '#app',
+	data: {
+		namaPeserta: '',
+		namaPenyelenggara: '',
+		jabatanPenyelenggara: '',
+		nomorIdentitasPenyelenggara: '',
+		mengetahui: [],
+		status: ''
+	},
+	created(){
+		this.addPenyelenggara("Ketua<br>Pelaksana", "Astri Wulandari", "NIM 1101174148")
+		this.addPenyelenggara("Presiden Mahasiswa<br>BEM KEMA Telkom University", "Yusuf Sugiyarto", "NIM 1101154305")
+		this.addPenyelenggara("Direktorat Kemahasiswaan", "Andijoko Tjahjono", "NIP.16671909-4")
+	},
+	methods: {
+		addPenyelenggara (jabatan, nama, nomorIdentitas) {
+			const data = {
+				jabatan: jabatan,
+				nama: nama,
+				nomorIdentitas: nomorIdentitas
+			}
+			this.mengetahui.push(data);
+			this.namaPenyelenggara = ''
+			this.jabatanPenyelenggara = ''
+			this.nomorIdentitasPenyelenggara = ''
+		},
+		download (format) {
+			if (this.namaPeserta == '') {
+				alert('Silahkan Isi nama peserta');
+			}else {
+				if (format == "pdf") {
+					// var doc = new jsPDF();
+					// var elementHTML = $('#canvasExport').html();
+					// var specialElementHandlers = {
+					// 	'#elementH': function (element, renderer) {
+					// 		return true;
+					// 	}
+					// };
+					// doc.fromHTML(elementHTML, 15, 15, {
+					// 	'width': 170,
+					// 	'elementHandlers': specialElementHandlers
+					// });
+
+					// // Save the PDF
+					// doc.save('sample-document.pdf');
+				}else {
+					this.status = "Export Image:";
+					$("html").addClass("hide-scrollbar"); //hide scrollbar because it is showing left white padding
+					html2canvas(document.querySelector("#capture"), {
+						scale: 5
+					}).then(canvas => {
+						document.querySelector(".container").appendChild(canvas).setAttribute('id','canvasExport');
+					});
+					$("html").removeClass("hide-scrollbar");
+				}
+			}
+		}
+	}
+});
+</script>
+</body>
+</html>
