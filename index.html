@@ -17,7 +17,7 @@
 	<div class="container">
 
 		<div class="inputContainer no-print">
-			<input type="text" v-model="namaPeserta" placeholder="Masukkan Nama Peserta">
+			<input type="text" v-model="namaPeserta" placeholder="Masukkan Nama Peserta" @keyup.enter="download('jpg')">
 			<!-- <input type="submit" value="Download PDF" @click="download('pdf')"> -->
 			<input type="submit" value="Export PNG" @click="download('jpg')">
 			<!-- <br><br>
